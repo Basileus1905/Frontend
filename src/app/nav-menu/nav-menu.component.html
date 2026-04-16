@@ -1,0 +1,13 @@
+<nav class="navbar" *ngIf="(isEnsar$ | async)">
+  <div class="hamburger" (click)="toggleMenu()" [class.active]="isMenuOpen">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+  </div>
+
+  <div class="nav-links" [class.active]="isMenuOpen">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">Shopping List</a>
+    <a routerLink="/calendar" routerLinkActive="active" (click)="closeMenu()">Calendar</a>
+    <a class="logout-link" (click)="logout()">Logout</a>
+  </div>
+</nav>

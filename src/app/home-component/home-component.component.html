@@ -1,0 +1,61 @@
+
+<div class="container">
+  <div class="header">
+    <h1>Shopping List App</h1>
+    <div class="user-info">
+      <span>Welcome, {{ username }}</span>
+      <button (click)="logout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- Add new item form -->
+  <div class="add-item-form">
+    <h3>Add New Item</h3>
+    <div class="input-group">
+      <input
+        type="text"
+        [(ngModel)]="newItemName"
+        placeholder="Enter item name"
+        (keyup.enter)="addItem()"
+      />
+      <button
+        [disabled]="!newItemName.trim() || isAddingItem"
+        (click)="addItem()"
+      >
+        {{ isAddingItem ? 'Adding...' : 'Add Item' }}
+      </button>
+    </div>
+    <div *ngIf="addItemError" class="error-message">
+      {{ addItemError }}
+    </div>
+  </div>
+
+  <div *ngIf="isLoading">Loading shopping items...</div>
+
+  <div class="shopping-lists">
+    <div class="list-container">
+      <h2>Active Shopping Items</h2>
+      <div *ngIf="activeShoppingItems.length === 0" class="empty-list">
+        No active shopping items.
+      </div>
+      <ul *ngIf="activeShoppingItems.length > 0" class="item-list">
+        <li *ngFor="let item of activeShoppingItems" class="shopping-item">
+          <span class="item-name">{{ item.itemName }}</span>
+          <button class="remove-btn" (click)="removeItem(item.id)">X</button>
+        </li>
+      </ul>
+    </div>
+
+    <div class="list-container">
+      <h2>Removed Shopping Items</h2>
+      <div *ngIf="removedShoppingItems.length === 0" class="empty-list">
+        No removed shopping items.
+      </div>
+      <ul *ngIf="removedShoppingItems.length > 0" class="item-list">
+        <li *ngFor="let item of removedShoppingItems" class="shopping-item removed">
+          <span class="item-name">{{ item.itemName }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

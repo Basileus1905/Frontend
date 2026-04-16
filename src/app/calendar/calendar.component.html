@@ -1,0 +1,108 @@
+<div class="main-container">
+  <div class="calendar-container">
+    <div class="calendar-header">
+      <button (click)="previousMonth()">&lt;</button>
+      <div class="month-title" (click)="goToCurrentMonth()" title="Go to current month">
+          {{ currentMonthYear }}
+      </div>
+      <button (click)="nextMonth()">&gt;</button>
+    </div>
+
+    <div class="calendar-grid">
+      <div class="weekday-header" *ngFor="let day of weekDays">{{ day }}</div>
+
+      <div *ngFor="let day of calendarDays"
+           class="calendar-day"
+           [ngClass]="{'not-current-month': !day.isCurrentMonth, 'is-today': day.isToday}"
+           (click)="openModal(day)">
+
+        <img *ngIf="day.entries && day.entries.length > 0 && day.entries[0].picture"
+             [src]="'data:image/png;base64,' + day.entries[0].picture"
+             class="day-picture"
+             alt="Entry Picture">
+
+        <span class="day-number" *ngIf="day.isCurrentMonth">{{ day.date.getDate() }}</span>
+
+        <div class="day-entries" *ngIf="day.entries && day.entries.length > 0">
+          <div class="entry-dot" *ngFor="let entry of day.entries" [title]="entry.text"></div>
+        </div>
+
+        <span class="kiss-emoji" *ngIf="day.date.getMonth() === 2 && day.date.getDate() === 16">💋</span>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="info-sidebar">
+    <div class="time-since-card">
+      <h3>Time Since March 5th, 2026</h3>
+      <div class="time-stats">
+        <div class="stat">
+          <span class="value">{{ elapsedTime.months }}</span>
+          <span *ngIf="elapsedTime.months != 1" class="label">Months</span>
+          <span *ngIf="elapsedTime.months == 1" class="label">Month</span>
+        </div>
+        <div class="stat">
+          <span class="value">{{ elapsedTime.weeks }}</span>
+          <span *ngIf="elapsedTime.weeks != 1" class="label">Weeks</span>
+          <span *ngIf="elapsedTime.weeks == 1" class="label">Week</span>
+        </div>
+        <div class="stat">
+          <span class="value">{{ elapsedTime.days }}</span>
+          <span *ngIf="elapsedTime.days != 1" class="label">Days</span>
+          <span *ngIf="elapsedTime.days == 1" class="label">Day</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="amount-card">
+      <h3>How often we've seen each-other</h3>
+      <div class="amount-value">{{ calendarAmount }}</div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal" *ngIf="showModal">
+  <div class="modal-content">
+    <span class="close" (click)="closeModal()">&times;</span>
+
+    <!-- View Entry -->
+    <div *ngIf="isViewingEntry && selectedEntry">
+      <h2>Entry for {{ selectedDate | date:'mediumDate' }}</h2>
+      <div class="entry-view">
+        <p class="entry-text">{{ selectedEntry.text }}</p>
+        <img *ngIf="selectedEntry.picture" [src]="'data:image/png;base64,' + selectedEntry.picture" class="entry-image" alt="Entry Image">
+      </div>
+      <div class="modal-actions">
+        <button (click)="closeModal()" class="cancel-btn">Close</button>
+        <button (click)="startEditing()" class="edit-btn">Edit</button>
+      </div>
+    </div>
+
+    <!-- Add or Edit Entry -->
+    <div *ngIf="!isViewingEntry">
+      <h2 *ngIf="!isEditing">Add Entry for {{ selectedDate | date:'mediumDate' }}</h2>
+      <h2 *ngIf="isEditing">Edit Entry for {{ selectedDate | date:'mediumDate' }}</h2>
+
+      <div class="form-group">
+        <label for="entryText">Text (Required):</label>
+        <textarea id="entryText" [(ngModel)]="entryText" rows="4" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="entryPicture">Picture (Optional):</label>
+        <input type="file" id="entryPicture" (change)="onFileSelected($event)" accept="image/*">
+        <img *ngIf="entryPicture" [src]="'data:image/png;base64,' + entryPicture" class="preview-image" alt="Preview">
+      </div>
+
+      <div class="modal-actions">
+        <button (click)="isEditing ? cancelEditing() : closeModal()" class="cancel-btn">Cancel</button>
+        <button (click)="saveEntry()" class="save-btn" [disabled]="!entryText">
+          {{ isEditing ? 'Save Changes' : 'Save' }}
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
