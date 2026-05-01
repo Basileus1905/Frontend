@@ -13,7 +13,7 @@ export interface CalendarEntry {
   providedIn: 'root'
 })
 export class CalendarService {
-  url = 'http://localhost:8080/dateCalendar';
+  url = 'https://ensarbackend-31591307580.europe-west1.run.app/dateCalendar';
 
   constructor(private http: HttpClient) { }
 

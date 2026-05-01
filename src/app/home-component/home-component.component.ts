@@ -86,7 +86,7 @@ export class HomeComponent implements OnInit {
         itemName: this.newItemName,
         dateAdded: new Date(),
         dateRemoved: null as unknown as Date, // Set as null initially
-        addedBy: "Ensar"
+        addedBy: this.username
       };
 
       console.log('Adding new item:', newItem);

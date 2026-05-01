@@ -22,7 +22,7 @@ export class NavMenuComponent {
     private eRef: ElementRef
   ) {
     this.isEnsar$ = this.authService.currentUser$.pipe(
-      map(user => user?.username === 'Ensar')
+      map(user => user?.username === 'Ensar' || user?.username === 'Fat'),
     );
   }
 
