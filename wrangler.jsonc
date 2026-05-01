@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "frontend",
+  "compatibility_date": "2026-05-01",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "dist/ensar-frontend/browser"
+  },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ]
+}
