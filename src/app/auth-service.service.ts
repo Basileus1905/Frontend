@@ -15,7 +15,7 @@ interface User {
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_URL = 'http://localhost:8080/api/auth';
+  private readonly API_URL = 'https://ensarbackend-31591307580.europe-west1.run.app/api/auth';
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
   private jwtHelper = new JwtHelperService();
