@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
-import {lastValueFrom} from 'rxjs';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { lastValueFrom } from 'rxjs';
 
 export interface CalendarEntry {
   id?: number;
@@ -13,7 +13,7 @@ export interface CalendarEntry {
   providedIn: 'root'
 })
 export class CalendarService {
-  url = 'http://localhost:8080/dateCalendar';
+  url = 'https://ensarbackend-31591307580.europe-west1.run.app/dateCalendar';
 
   constructor(private http: HttpClient) { }
 

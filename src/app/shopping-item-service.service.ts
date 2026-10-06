@@ -13,7 +13,7 @@ interface ShoppingItemsResponse {
   providedIn: 'root'
 })
 export class ShoppingItemServiceService {
-  url = 'http://localhost:8080/';
+  url = 'https://ensarbackend-31591307580.europe-west1.run.app/';
 
   constructor(
     private http: HttpClient,
