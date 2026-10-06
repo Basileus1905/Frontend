@@ -72,7 +72,13 @@
       <h2>Entry for {{ selectedDate | date:'mediumDate' }}</h2>
       <div class="entry-view">
         <p class="entry-text">{{ selectedEntry.text }}</p>
-        <img *ngIf="selectedEntry.picture" [src]="'data:image/png;base64,' + selectedEntry.picture" class="entry-image" alt="Entry Image">
+        <div class="entry-image-wrapper" *ngIf="selectedEntry.picture">
+          <img [src]="'data:image/png;base64,' + selectedEntry.picture" class="entry-image" alt="Entry Image">
+          <div *ngIf="isLoadingHighRes" class="loading-overlay" title="Loading high-resolution image...">
+            <span class="spinner"></span>
+            <span class="loading-text">Loading HD...</span>
+          </div>
+        </div>
       </div>
       <div class="modal-actions">
         <button (click)="closeModal()" class="cancel-btn">Close</button>
@@ -93,7 +99,13 @@
       <div class="form-group">
         <label for="entryPicture">Picture (Optional):</label>
         <input type="file" id="entryPicture" (change)="onFileSelected($event)" accept="image/*">
-        <img *ngIf="entryPicture" [src]="'data:image/png;base64,' + entryPicture" class="preview-image" alt="Preview">
+        <div class="entry-image-wrapper" *ngIf="entryPicture">
+          <img [src]="'data:image/png;base64,' + entryPicture" class="preview-image" alt="Preview">
+          <div *ngIf="isLoadingHighRes && !hasUserSelectedFile" class="loading-overlay" title="Loading high-resolution image...">
+            <span class="spinner"></span>
+            <span class="loading-text">Loading HD...</span>
+          </div>
+        </div>
       </div>
 
       <div class="modal-actions">

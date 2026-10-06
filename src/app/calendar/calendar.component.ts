@@ -31,6 +31,8 @@ export class CalendarComponent implements OnInit {
 
   entryText = '';
   entryPicture = '';
+  isLoadingHighRes = false;
+  hasUserSelectedFile = false;
 
   elapsedTime: { months: number, weeks: number, days: number } = { months: 0, weeks: 0, days: 0 };
   calendarAmount: number = 0;
@@ -120,7 +122,7 @@ export class CalendarComponent implements OnInit {
         date: d,
         isCurrentMonth: false,
         isToday: this.isToday(d),
-        entries: this.getEntriesForDate(d, monthEntries)
+        entries: []
       });
     }
 
@@ -141,7 +143,7 @@ export class CalendarComponent implements OnInit {
         date: d,
         isCurrentMonth: false,
         isToday: this.isToday(d),
-        entries: this.getEntriesForDate(d, monthEntries)
+        entries: []
       });
     }
 
@@ -165,6 +167,10 @@ export class CalendarComponent implements OnInit {
   }
 
   openModal(day: CalendarDay) {
+    if (!day.isCurrentMonth) {
+      return;
+    }
+    this.hasUserSelectedFile = false;
     if (day.entries.length > 0) {
       // View existing entry
       this.isViewingEntry = true;
@@ -174,6 +180,10 @@ export class CalendarComponent implements OnInit {
       // Pre-fill form in case they click edit
       this.entryText = this.selectedEntry.text;
       this.entryPicture = this.selectedEntry.picture || '';
+
+      if (this.selectedEntry.id) {
+        this.fetchHighResEntry(this.selectedEntry.id);
+      }
     } else {
       // Add new entry
       this.isViewingEntry = false;
@@ -181,8 +191,30 @@ export class CalendarComponent implements OnInit {
       this.selectedDate = day.date;
       this.entryText = '';
       this.entryPicture = '';
+      this.isLoadingHighRes = false;
     }
     this.showModal = true;
+  }
+
+  async fetchHighResEntry(id: number) {
+    this.isLoadingHighRes = true;
+    try {
+      const fullEntry = await this.calendarService.getCalendarEntryById(id);
+      if (this.showModal && this.selectedEntry && this.selectedEntry.id === id) {
+        if (fullEntry.picture) {
+          this.selectedEntry.picture = fullEntry.picture;
+          if (!this.hasUserSelectedFile) {
+            this.entryPicture = fullEntry.picture;
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching high-resolution entry:', error);
+    } finally {
+      if (this.selectedEntry && this.selectedEntry.id === id) {
+        this.isLoadingHighRes = false;
+      }
+    }
   }
 
   startEditing() {
@@ -194,6 +226,7 @@ export class CalendarComponent implements OnInit {
     if (this.selectedEntry) {
         this.isViewingEntry = true;
         this.isEditing = false;
+        this.hasUserSelectedFile = false;
         // Reset the form back to the saved entry
         this.entryText = this.selectedEntry.text;
         this.entryPicture = this.selectedEntry.picture || '';
@@ -208,11 +241,14 @@ export class CalendarComponent implements OnInit {
     this.selectedEntry = null;
     this.isViewingEntry = false;
     this.isEditing = false;
+    this.isLoadingHighRes = false;
+    this.hasUserSelectedFile = false;
   }
 
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
+      this.hasUserSelectedFile = true;
       const reader = new FileReader();
       reader.onload = (e: any) => {
         const base64String = e.target.result.split(',')[1];
@@ -222,14 +258,22 @@ export class CalendarComponent implements OnInit {
     }
   }
 
+
   async saveEntry() {
     if (!this.entryText || !this.selectedDate) {
       alert('Text is required.');
       return;
     }
 
+    const localNoon = new Date(
+      this.selectedDate.getFullYear(),
+      this.selectedDate.getMonth(),
+      this.selectedDate.getDate(),
+      12, 0, 0
+    );
+
     const entry: CalendarEntry = {
-      entryDate: this.selectedDate.toISOString(),
+      entryDate: localNoon.toISOString(),
       text: this.entryText,
       picture: this.entryPicture || undefined
     };

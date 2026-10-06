@@ -13,7 +13,7 @@ export interface CalendarEntry {
   providedIn: 'root'
 })
 export class CalendarService {
-  url = 'https://ensarbackend-31591307580.europe-west1.run.app/dateCalendar';
+  url = 'http://localhost:8080/dateCalendar';
 
   constructor(private http: HttpClient) { }
 
@@ -65,6 +65,17 @@ export class CalendarService {
     } catch (error) {
       console.error('Error in getCalendarAmount:', error);
       return 0;
+    }
+  }
+
+  async getCalendarEntryById(id: number): Promise<CalendarEntry> {
+    try {
+      return await lastValueFrom(
+        this.http.get<CalendarEntry>(`${this.url}/${id}`)
+      );
+    } catch (error) {
+      console.error('Error in getCalendarEntryById:', error);
+      throw error;
     }
   }
 }
