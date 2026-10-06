@@ -7,7 +7,11 @@ import { CalendarComponent } from './calendar/calendar.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent},
-  { path: 'calendar', component: CalendarComponent},
+  {
+    path: 'calendar',
+    component: CalendarComponent,
+    canActivate: [AuthGuard]
+  },
   {
     path: '',
     component: HomeComponent,
